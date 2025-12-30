@@ -1,0 +1,58 @@
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<div style="width: 100%; height: 100vh; display: flex; flex-direction: column;">
+
+    <div style="
+        background-color: #323639; 
+        color: #e8eaed; 
+        padding: 7px; 
+        font-family: sans-serif; 
+        font-size: 18px; 
+        letter-spacing: 0.5px; 
+        position: relative; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    ">
+        Resume Viewer
+
+        <a href="/admin/" style="
+            position: absolute;
+            right: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #e8eaed;
+            background-color: #202124;
+            border: 1px solid #5f6368;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: sans-serif;
+        ">
+            Admin Login
+        </a>
+    </div>
+
+    {% if resume %}
+    <object
+      data="{{ request.build_absolute_uri }}{{ resume.file.url }}"
+      type="application/pdf"
+      style="width: 100%; flex-grow: 1; display: block; border: none;"
+    >
+      <div style="padding: 20px; text-align: center;">
+          <p>Unable to display PDF. <a href="{{ resume.file.url }}">Download instead</a></p>
+      </div>
+    </object>
+
+    {% else %}
+        <div style="height: 100%; display: flex; justify-content: center; align-items: center;">
+            <p>No resume uploaded</p>
+        </div>
+    {% endif %}
+</div>
