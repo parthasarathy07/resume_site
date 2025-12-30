@@ -6,12 +6,11 @@ class Resume(models.Model):
     uploaded_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "Resume"
+        return os.path.basename(self.file.name) if self.file else "Resume (no file)"
 
     def save(self, *args, **kwargs):
         if self.pk:
             old_resume = Resume.objects.get(pk=self.pk)
             if old_resume.file and old_resume.file != self.file:
-                if os.path.isfile(old_resume.file.path):
-                    os.remove(old_resume.file.path)
+                old_resume.file.delete(save=False)
         super().save(*args, **kwargs)
