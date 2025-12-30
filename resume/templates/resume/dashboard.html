@@ -1,3 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}My Resume{% endblock %}</title>
+
+</head>
+<body>
 <style>
     body, html {
         margin: 0;
@@ -40,15 +51,78 @@
     </div>
 
     {% if resume %}
-    <object
-      data="{{ request.build_absolute_uri }}{{ resume.file.url }}"
-      type="application/pdf"
-      style="width: 100%; flex-grow: 1; display: block; border: none;"
-    >
-      <div style="padding: 20px; text-align: center;">
-          <p>Unable to display PDF. <a href="{{ resume.file.url }}">Download instead</a></p>
-      </div>
-    </object>
+    <!-- Mobile-friendly PDF viewer -->
+    <div id="pdf-container" style="width: 100%; flex-grow: 1; display: flex; flex-direction: column;">
+        <!-- Download button for mobile -->
+        <div id="mobile-download" style="
+            display: none;
+            padding: 15px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-family: sans-serif;
+        ">
+            <p style="margin: 0 0 10px 0; color: #6c757d; font-size: 14px;">
+                Having trouble viewing the PDF? 
+                <a href="{{ resume.file.url }}" style="
+                    color: #007bff;
+                    text-decoration: none;
+                    font-weight: 500;
+                ">Download instead</a>
+            </p>
+        </div>
+
+        <!-- PDF viewer for all devices -->
+        <object
+          id="pdf-object"
+          data="{{ resume.file.url }}"
+          type="application/pdf"
+          style="width: 100%; flex-grow: 1; display: block; border: none;"
+        >
+          <div style="padding: 40px 20px; text-align: center; background-color: #f8f9fa;">
+              <div style="max-width: 400px; margin: 0 auto;">
+                  <h3 style="color: #495057; margin-bottom: 15px; font-family: sans-serif;">PDF Viewer Not Supported</h3>
+                  <p style="color: #6c757d; margin-bottom: 20px; font-family: sans-serif;">
+                      Your browser doesn't support embedded PDF viewing.
+                  </p>
+                  <a href="{{ resume.file.url }}" style="
+                      display: inline-block;
+                      background-color: #007bff;
+                      color: white;
+                      padding: 12px 24px;
+                      text-decoration: none;
+                      border-radius: 4px;
+                      font-family: sans-serif;
+                      font-size: 16px;
+                      font-weight: 500;
+                      box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+                  ">Download PDF</a>
+              </div>
+          </div>
+        </object>
+    </div>
+
+    <script>
+        // Show download option on mobile devices
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                   window.innerWidth <= 768;
+        }
+
+        function updatePDFDisplay() {
+            const mobileDownload = document.getElementById('mobile-download');
+
+            if (isMobile()) {
+                mobileDownload.style.display = 'block';
+            } else {
+                mobileDownload.style.display = 'none';
+            }
+        }
+
+        // Check on load and resize
+        updatePDFDisplay();
+        window.addEventListener('resize', updatePDFDisplay);
+    </script>
 
     {% else %}
         <div style="height: 100%; display: flex; justify-content: center; align-items: center;">
@@ -56,3 +130,7 @@
         </div>
     {% endif %}
 </div>
+
+    
+</body>
+</html>
